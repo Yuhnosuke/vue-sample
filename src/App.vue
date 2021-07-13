@@ -10,7 +10,7 @@
         @change="onInputFilterCategory"
       />
       <template v-for="item in this.filteredTodoList">
-        <TodoItem :key="item.id" :content="item" />
+        <TodoItem :key="item.id" :content="item" :removeItem="handleRemoveItem"/>
       </template>
     </section>
     <ToolBox :addTodoItem="handleAddTodoItem" />
@@ -78,6 +78,10 @@
         })
         localStorage.setItem('todoList', JSON.stringify(this.todoList))
       },
+      handleRemoveItem(id) {
+        this.todoList = this.todoList.filter(item => item.id !== id)
+        localStorage.setItem('todoList', JSON.stringify(this.todoList))        
+      }
     },
   })
 </script>

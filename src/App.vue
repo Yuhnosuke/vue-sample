@@ -9,6 +9,12 @@
         :value="input.filter.category"
         @change="onInputFilterCategory"
       />
+      <button 
+        class="removed-todos-button" 
+        :removedTodoList="removedTodoList"
+        @click="showRemovedTodoList"
+        >削除済Todo
+      </button>
       <template v-for="item in this.filteredTodoList">
         <TodoItem :key="item.id" :content="item" :removeItem="handleRemoveItem"/>
       </template>
@@ -34,6 +40,7 @@
     data() {
       return {
         todoList: [],
+        removedTodoList: [],
         input: {
           filter: {
             category: null,
@@ -43,9 +50,14 @@
     },
     mounted() {
       const todoListJson = localStorage.getItem('todoList')
+      const removedTodoListJson = localStorage.getItem('removedTodoList')
       if (todoListJson) {
         const todoList = JSON.parse(todoListJson)
         this.todoList = todoList
+      }
+      if (removedTodoListJson) {
+        const removedTodoList = JSON.parse(removedTodoListJson)
+        this.removedTodoList = removedTodoList
       }
     },
     computed: {
@@ -75,12 +87,25 @@
           title: item.title,
           expiresAt: item.expiresAt || null,
           category: item.category || null,
+          memo: item.memo || null,
         })
         localStorage.setItem('todoList', JSON.stringify(this.todoList))
+        localStorage.setItem('removedTodoList', JSON.stringify(this.removedTodoList))
       },
       handleRemoveItem(id) {
-        this.todoList = this.todoList.filter(item => item.id !== id)
-        localStorage.setItem('todoList', JSON.stringify(this.todoList))        
+        const removedItem = this.todoList.filter(item => item.id === id)[0]
+        this.removedTodoList.push(removedItem)
+        this.todoList = this.todoList.filter(item => item.id !== id)      
+
+        localStorage.setItem('todoList', JSON.stringify(this.todoList))
+        localStorage.setItem('removedTodoList', JSON.stringify(this.removedTodoList))
+      },
+      showRemovedTodoList() {
+        if(this.removedTodoList.length === 0) {
+          console.log('削除済Todoはありません')
+          return
+        }
+        this.removedTodoList.map(item => console.log(item.title))
       }
     },
   })
@@ -90,7 +115,7 @@
   * {
     padding: 0;
     margin: 0;
-    font-family: Meiryo;
+    font-family: sans-serif;
   }
 </style>
 
@@ -107,4 +132,12 @@
     font-size: 16px;
     padding: 4px;
   }
+  .removed-todos-button {
+    margin-bottom: 8px;
+    font-size: 16px;
+    padding: 2px;
+    position: absolute;
+    right: 16px;
+  }
+
 </style>

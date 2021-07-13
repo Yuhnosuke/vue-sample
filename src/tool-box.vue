@@ -3,6 +3,7 @@
     <input class="text-field" type="text" placeholder="タイトル" :value="title" @keyup="onInputTitle" />
     <input class="text-field" type="text" placeholder="期限" :value="expiresAt" @keyup="onInputExpiresAt" />
     <input class="text-field" type="text" placeholder="カテゴリ" :value="category" @keyup="onInputCategory" />
+    <input class="text-field" type="text" placeholder="メモ" :value="memo" @keyup="onInputMemo"/>
     <button @click="onClickAdd">追加</button>
   </section>
 </template>
@@ -23,6 +24,7 @@
         title: '',
         expiresAt: '',
         category: '',
+        memo: '',
       }
     },
     methods: {
@@ -35,15 +37,20 @@
       onInputCategory(event) {
         this.category = event.target.value
       },
+      onInputMemo(event) {
+        this.memo = event.target.value
+      },
       onClickAdd() {
         this.addTodoItem({
           title: this.title,
           expiresAt: this.expiresAt,
           category: this.category,
+          memo: this.memo,
         })
         this.title = ''
         this.expiresAt = ''
         this.category = ''
+        this.memo = ''
       },
     },
   })
@@ -59,7 +66,7 @@
     display: flex;
     flex-direction: column;
     border-top: 1px solid #ccc;
-    height: 178px;
+    height: 202px;
     background-color: #fff;
     box-sizing: border-box;
   }

@@ -1,9 +1,10 @@
 <template>
   <div class="todo-item">
+    <button class="remove-button" @click="onClickRemove">x</button>
     <h2>{{ content.title }}</h2>
     <p v-if="content.expiresAt">{{ content.expiresAt }}まで</p>
     <p v-if="content.category">{{ content.category }}</p>
-    <button class="remove-button" @click="onClickRemove">削除</button>
+    <p v-if="content.memo">{{ content.memo }}</p>
   </div>
 </template>
 
@@ -37,17 +38,15 @@
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
     padding: 8px;
     margin-bottom: 8px;
+    position: relative;
   }
 
-  .remove-button {
-    background-color: #f44336; /* Green */
-    border-radius: 4px;
-    border: none;
-    color: white;
-    padding: 8px;
-    margin-top: 8px;
-    text-align: center;
-    display: inline-block;
-    font-size: 16px;
+  .todo-item .remove-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 28px;
+    height: 28px;
+
   }
 </style>

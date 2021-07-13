@@ -89,6 +89,7 @@
           expiresAt: item.expiresAt || null,
           category: item.category || null,
           memo: item.memo || null,
+          isDone: false,
         })
         localStorage.setItem('todoList', JSON.stringify(this.todoList))
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))

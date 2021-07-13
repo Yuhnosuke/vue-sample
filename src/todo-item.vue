@@ -1,8 +1,13 @@
 <template>
-  <div class="todo-item">
+  <div class="todo-item"
+    :class="classObject"
+    >
     <button class="delete-button" @click="onClickDelete">X</button>
-    <button class="done-button" @click="onClickDone">○</button>
-    <h2>{{ content.title }}</h2>
+    <button class="done-button"
+      @click="toggleIsDone"
+      :class="classObject"
+      >○</button>
+    <h2 :class="classObject">{{ content.title }}</h2>
     <p v-if="content.expiresAt">{{ content.expiresAt }}まで</p>
     <p v-if="content.category">{{ content.category }}</p>
     <p v-if="content.memo">{{ content.memo }}</p>
@@ -28,8 +33,15 @@
       onClickDelete() {
         this.deleteItem(this.content.id)
       },
-      onClickDone() {
-        console.log('Done', this.content.id)
+      toggleIsDone() {
+        this.content.isDone = !this.content.isDone
+       }
+    },
+    computed: {
+      classObject: function() {
+        return {
+          done: this.content.isDone
+        }
       }
     }
   })
@@ -61,5 +73,17 @@
   .todo-item .done-button {
     right: 48px;
     background-color: #e7eff6;
+  }
+
+  h2.done {
+    text-decoration: line-through;
+  }
+
+  button.done-button.done {
+    background-color: #4b86b4;
+  }
+
+  .todo-item.done {
+    background-color: #ccc;
   }
 </style>

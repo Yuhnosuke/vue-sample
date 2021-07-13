@@ -1,6 +1,7 @@
 <template>
   <div class="todo-item">
-    <button class="remove-button" @click="onClickRemove">x</button>
+    <button class="delete-button" @click="onClickDelete">X</button>
+    <button class="done-button" @click="onClickDone">○</button>
     <h2>{{ content.title }}</h2>
     <p v-if="content.expiresAt">{{ content.expiresAt }}まで</p>
     <p v-if="content.category">{{ content.category }}</p>
@@ -18,14 +19,17 @@
         type: Object,
         required: true,
       },
-      removeItem: {
+      deleteItem: {
         type: Function,
         required: true,
       }
     },
     methods: {
-      onClickRemove() {
-        this.removeItem(this.content.id)
+      onClickDelete() {
+        this.deleteItem(this.content.id)
+      },
+      onClickDone() {
+        console.log('Done', this.content.id)
       }
     }
   })
@@ -41,12 +45,21 @@
     position: relative;
   }
 
-  .todo-item .remove-button {
+  .todo-item .delete-button, .todo-item .done-button {
     position: absolute;
-    right: 8px;
     top: 8px;
     width: 28px;
     height: 28px;
+    border-radius: 5px;
+  }
 
+  .todo-item .delete-button {
+    right: 8px;
+    background-color: #2a4d69 ;
+
+  }
+  .todo-item .done-button {
+    right: 48px;
+    background-color: #e7eff6;
   }
 </style>

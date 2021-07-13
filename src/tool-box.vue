@@ -10,7 +10,7 @@
 
 <script>
   import Vue from 'vue'
-
+  
   export default Vue.extend({
     name: 'ToolBox',
     props: {
@@ -32,7 +32,7 @@
         this.title = event.target.value
       },
       onInputExpiresAt(event) {
-        this.expiresAt = event.target.value
+         this.expiresAt = event.target.value
       },
       onInputCategory(event) {
         this.category = event.target.value

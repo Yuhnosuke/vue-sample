@@ -10,13 +10,13 @@
         @change="onInputFilterCategory"
       />
       <button 
-        class="removed-todos-button" 
-        :removedTodoList="removedTodoList"
-        @click="showRemovedTodoList"
+        class="deleted-todos-button" 
+        :deletedTodoList="deletedTodoList"
+        @click="showDeletedTodoList"
         >削除済Todo
       </button>
       <template v-for="item in this.filteredTodoList">
-        <TodoItem :key="item.id" :content="item" :removeItem="handleRemoveItem"/>
+        <TodoItem :key="item.id" :content="item" :deleteItem="handleDeleteItem"/>
       </template>
     </section>
     <ToolBox :addTodoItem="handleAddTodoItem" />
@@ -40,7 +40,7 @@
     data() {
       return {
         todoList: [],
-        removedTodoList: [],
+        deletedTodoList: [],
         input: {
           filter: {
             category: null,
@@ -50,14 +50,15 @@
     },
     mounted() {
       const todoListJson = localStorage.getItem('todoList')
-      const removedTodoListJson = localStorage.getItem('removedTodoList')
+      const deletedTodoListJson = localStorage.getItem('deletedTodoList')
       if (todoListJson) {
         const todoList = JSON.parse(todoListJson)
         this.todoList = todoList
       }
-      if (removedTodoListJson) {
-        const removedTodoList = JSON.parse(removedTodoListJson)
-        this.removedTodoList = removedTodoList
+
+      if (deletedTodoListJson) {
+        const deletedTodoList = JSON.parse(deletedTodoListJson)
+        this.deletedTodoList = deletedTodoList
       }
     },
     computed: {
@@ -90,22 +91,23 @@
           memo: item.memo || null,
         })
         localStorage.setItem('todoList', JSON.stringify(this.todoList))
-        localStorage.setItem('removedTodoList', JSON.stringify(this.removedTodoList))
+        localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
-      handleRemoveItem(id) {
-        const removedItem = this.todoList.filter(item => item.id === id)[0]
-        this.removedTodoList.push(removedItem)
+      handleDeleteItem(id) {
+        const deletedItem = this.todoList.filter(item => item.id === id)[0]
+        this.deletedTodoList.push(deletedItem)
+
         this.todoList = this.todoList.filter(item => item.id !== id)      
 
         localStorage.setItem('todoList', JSON.stringify(this.todoList))
-        localStorage.setItem('removedTodoList', JSON.stringify(this.removedTodoList))
+        localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
-      showRemovedTodoList() {
-        if(this.removedTodoList.length === 0) {
+      showDeletedTodoList() {
+        if(this.deletedTodoList.length === 0) {
           console.log('削除済Todoはありません')
           return
         }
-        this.removedTodoList.map(item => console.log(item.title))
+        this.deletedTodoList.map(item => console.log(item.title))
       }
     },
   })
@@ -132,7 +134,7 @@
     font-size: 16px;
     padding: 4px;
   }
-  .removed-todos-button {
+  .deleted-todos-button {
     margin-bottom: 8px;
     font-size: 16px;
     padding: 2px;

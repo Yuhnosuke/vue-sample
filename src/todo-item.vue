@@ -9,44 +9,62 @@
     <button class="edit-button"
       @click="openEditDialog"
       >△</button>
-    <div id="overlay">
+    <div 
+      id="overlay"
+      v-if="showDialog"
+      >
       <div id="content">
         <!-- TODO: きれいにする -->
-        <label for="title">タイトル</label>
-        <input id="title"
+        <div class="input-container">
+          <label for="title">タイトル</label>
+          <input id="title"
           class="text-field"
           type="text"
           :value="this.contentToUpdate.title"
           @keyup="onInputTitle"
-           />
-        <label for="expiresAt">期限</label>
-        <input 
-          id="expiresAt"
-          class="text-field"
-          type="text"
-          :value="this.contentToUpdate.expiresAt" 
-          @keyup="onInputExpiresAt"
-          />
-        <label for="category">カテゴリー</label>
-        <input
-          id="category"
-          class="text-field"
-          type="text"
-          :value="this.contentToUpdate.category"
-          @keyup="onInputCategory"
-          />
-        <label for="memo">メモ</label>
-        <input
-          id="memo"
-          class="text-field"
-          type="text"
-          :value="this.contentToUpdate.memo"
-          @keyup="onInputMemo"
-          />
-        <button 
-          class="update-button"
-          @click="onClickEdit"
-          >更新</button>
+           /> 
+        </div>
+        <div class="input-container">
+          <label for="expiresAt">期限</label>
+          <input 
+            id="expiresAt"
+            class="text-field"
+            type="text"
+            :value="this.contentToUpdate.expiresAt" 
+            @keyup="onInputExpiresAt"
+            />
+        </div>
+        <div class="input-container">
+          <label for="category">カテゴリー</label>
+          <input
+            id="category"
+            class="text-field"
+            type="text"
+            :value="this.contentToUpdate.category"
+            @keyup="onInputCategory"
+            />
+        </div>
+        <div class="input-container">
+          <label for="memo">メモ</label>
+          <input
+            id="memo"
+            class="text-field"
+            type="text"
+            :value="this.contentToUpdate.memo"
+            @keyup="onInputMemo"
+            />
+        </div>
+        <div class="button-wrapper">
+          <button 
+            class="update-button"
+            @click="onClickEdit"
+            >更新</button>
+          <button
+            class="cancel-button"
+            @click="closeEditDialog"
+            >閉じる
+          </button>
+        </div>
       </div>
     </div>
     <button class="delete-button"
@@ -78,6 +96,11 @@
         required: true
       }
     },
+    data() {
+      return {
+        showDialog: true
+      }
+    },
     methods: {
       onClickDelete() {
         this.deleteItem(this.content.id)
@@ -87,7 +110,10 @@
        },
        openEditDialog() {
         //  TODO: モーダルを開く
-         console.log('open dialog')
+         this.showDialog = true
+       },
+       closeEditDialog() {
+         this.showDialog = false
        },
        onClickEdit() {
          const id = this.contentToUpdate.id
@@ -99,6 +125,8 @@
            memo: this.contentToUpdate.memo
          }
          this.updateTodoItem(id, payload)
+
+         this.showDialog = false
        },
        onInputTitle(event) {
          this.contentToUpdate.title = event.target.value
@@ -181,14 +209,12 @@
 
   #overlay {
     z-index: 1;
-    
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,20 +222,48 @@
 
   #content {
     z-index: 2;
-    width: 50%;
+    width: 30%;
+    height: 20%;
     padding: 1em;
     background-color: #fff;
+    position: relative;
   }
   
   .text-field {
     margin-bottom: 4px;
     font-size: 16px;
     padding: 4px;
+    display: block;
+  }
+
+  .input-container label,
+  .input-container input {
+    display: inline-block;
+  }
+
+  .input-container label {
+    width: 100px;
+  }
+
+  .button-wrapper {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .cancel-button,
+  .update-button {
+    border-radius: 5px;
+    width: 50px;
+    display: inline-block;
+    margin-right: 8px;
   }
 
   .update-button {
     background-color:rgb(100, 220, 70);
-    border-radius: 5px;
+  }
 
+  .cancel-button {
+    background-color:rgb(220, 100, 70); 
   }
 </style>

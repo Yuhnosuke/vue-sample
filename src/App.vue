@@ -114,6 +114,9 @@
         updateTodoItem.expiresAt = payload.expiresAt
         updateTodoItem.category = payload.category
         updateTodoItem.memo = payload.memo
+        
+        localStorage.setItem('todoList', JSON.stringify(this.todoList))
+        
       },
       showDeletedTodoList() {
         if(this.deletedTodoList.length === 0) {

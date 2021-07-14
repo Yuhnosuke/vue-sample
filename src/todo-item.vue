@@ -98,7 +98,7 @@
     },
     data() {
       return {
-        showDialog: true
+        showDialog: false
       }
     },
     methods: {
@@ -109,7 +109,6 @@
         this.content.isDone = !this.content.isDone
        },
        openEditDialog() {
-        //  TODO: モーダルを開く
          this.showDialog = true
        },
        closeEditDialog() {
@@ -222,8 +221,8 @@
 
   #content {
     z-index: 2;
-    width: 30%;
-    height: 20%;
+    width: 50%;
+    height: 50%;
     padding: 1em;
     background-color: #fff;
     position: relative;

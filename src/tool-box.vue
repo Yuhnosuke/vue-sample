@@ -2,7 +2,7 @@
   <section class="tool-box">
     <input class="text-field" type="text" placeholder="タイトル" :value="title" @keyup="onInputTitle" />
     <input class="text-field" type="text" placeholder="期限" :value="expiresAt" @keyup="onInputExpiresAt" />
-    <div v-for="candidateCategory in candiDateCategories" :key="candidateCategory.id">
+    <div v-for="candidateCategory in this.generateCandidateCategories" :key="candidateCategory.id">
       <input
         type="radio"
         name="selectCategory"
@@ -33,6 +33,10 @@
         type: Function,
         required: true,
       },
+      inputedCandidateCategories: {
+        type: Array,
+        required: false
+      }
     },
     data() {
       return {
@@ -73,6 +77,16 @@
         this.memo = ''
       },
     },
+    computed: {
+      generateCandidateCategories() {
+        if (this.inputedCandidateCategories.length === 0) {
+          return this.candiDateCategories
+        }
+        const cloned = this.candiDateCategories.slice()
+        this.inputedCandidateCategories.map(inputed => cloned.push(inputed))
+        return cloned
+      }
+    }
   })
 </script>
 

@@ -116,7 +116,6 @@
        },
        onClickEdit() {
          const id = this.contentToUpdate.id
-         console.log(id)
          const payload = {
            title: this.contentToUpdate.title,
            expiresAt: this.contentToUpdate.expiresAt,

@@ -9,6 +9,13 @@
         :value="input.filter.category"
         @change="onInputFilterCategory"
       />
+      <input 
+        class="text-field add-category-field"
+        type="text"
+        placeholder="カテゴリを追加"
+        :value="input.candidate.category.name"
+        @change="onInputCandidateCategory"
+        >
       <button 
         class="deleted-todos-button" 
         :deletedTodoList="deletedTodoList"
@@ -24,7 +31,10 @@
           />
       </template>
     </section>
-    <ToolBox :addTodoItem="handleAddTodoItem" />
+    <ToolBox
+      :addTodoItem="handleAddTodoItem"
+      :inputedCandidateCategories="candidates"
+      />
   </main>
 </template>
 
@@ -35,6 +45,7 @@
 
   const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
   const generateId = idByUnit(16)
+  const generateIdEightDigits = idByUnit(8)
 
   export default Vue.extend({
     name: 'App',
@@ -50,7 +61,14 @@
           filter: {
             category: null,
           },
+          candidate: {
+            category: {
+              id: null,
+              name: null
+            },
+          },
         },
+        candidates: []
       }
     },
     mounted() {
@@ -83,6 +101,18 @@
           return
         }
         this.input.filter.category = event.target.value
+      },
+      onInputCandidateCategory(event) {
+        if (event.target.value === '') {
+          this.input.candidate.category = null
+          return
+        }
+        this.input.candidate.category = {
+          id: generateIdEightDigits(),
+          name: event.target.value
+        }
+        this.candidates.push(this.input.candidate.category)
+        this.input.candidate.category = {}
       },
       handleAddTodoItem(item) {
         if (item.title === '') {
@@ -156,6 +186,10 @@
     padding: 2px;
     position: absolute;
     right: 16px;
+  }
+
+  .add-category-field {
+    margin-left: 8px;
   }
 
 </style>

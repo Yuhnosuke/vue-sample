@@ -16,7 +16,12 @@
         >削除済Todo
       </button>
       <template v-for="item in this.filteredTodoList">
-        <TodoItem :key="item.id" :content="item" :deleteItem="handleDeleteItem"/>
+        <TodoItem 
+          :key="item.id"
+          :content="item"
+          :deleteItem="handleDeleteItem"
+          :updateTodoItem="handleUpdateTodoItem"
+          />
       </template>
     </section>
     <ToolBox :addTodoItem="handleAddTodoItem" />
@@ -103,13 +108,20 @@
         localStorage.setItem('todoList', JSON.stringify(this.todoList))
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
+      handleUpdateTodoItem(id, payload) {
+        const updateTodoItem = this.todoList.filter(item => item.id === id)[0]
+        updateTodoItem.title = payload.title
+        updateTodoItem.expiresAt = payload.expiresAt
+        updateTodoItem.category = payload.category
+        updateTodoItem.memo = payload.memo
+      },
       showDeletedTodoList() {
         if(this.deletedTodoList.length === 0) {
           console.log('削除済Todoはありません')
           return
         }
         this.deletedTodoList.map(item => console.log(item.title))
-      }
+      },
     },
   })
 </script>

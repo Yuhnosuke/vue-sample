@@ -57,7 +57,7 @@
         <div class="button-wrapper">
           <button 
             class="update-button"
-            @click="onClickEdit"
+            @click="onClickUpdate"
             >更新</button>
           <button
             class="cancel-button"
@@ -114,15 +114,15 @@
        closeEditDialog() {
          this.showDialog = false
        },
-       onClickEdit() {
-         const id = this.contentToUpdate.id
+       onClickUpdate() {
          const payload = {
+           _id: this.contentToUpdate._id,
            title: this.contentToUpdate.title,
            expiresAt: this.contentToUpdate.expiresAt,
            category: this.contentToUpdate.category,
            memo: this.contentToUpdate.memo
          }
-         this.updateTodoItem(id, payload)
+         this.updateTodoItem(payload)
 
          this.showDialog = false
        },
@@ -147,7 +147,7 @@
       },
       contentToUpdate: function() {
         return {
-          id: this.content.id,
+          _id: this.content._id,
           title: this.content.title,
           expiresAt: this.content.expiresAt,
           category: this.content.category,

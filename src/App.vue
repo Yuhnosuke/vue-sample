@@ -24,7 +24,7 @@
       </button>
       <template v-for="item in this.filteredTodoList">
         <TodoItem 
-          :key="item.id"
+          :key="item._id"
           :content="item"
           :deleteItem="handleDeleteItem"
           :updateTodoItem="handleUpdateTodoItem"
@@ -44,7 +44,6 @@
   import ToolBox from './tool-box'
 
   const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
-  const generateId = idByUnit(16)
   const generateIdEightDigits = idByUnit(8)
 
   export default Vue.extend({
@@ -121,7 +120,6 @@
         }
 
         const payload = {
-          id: generateId(),
           title: item.title,
           expiresAt: item.expiresAt || null,
           category: item.category || null,
@@ -142,13 +140,13 @@
 
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
-      handleUpdateTodoItem(id, payload) {
-        const updateTodoItem = this.todoList.filter(item => item.id === id)[0]
-        updateTodoItem.title = payload.title
-        updateTodoItem.expiresAt = payload.expiresAt
-        updateTodoItem.category = payload.category
-        updateTodoItem.memo = payload.memo
+      handleUpdateTodoItem(payload) {
+        this.axios.put('https://jsondb.ysk.im/todoapp/todos/' + String(payload._id), payload)
         
+        const targetUpdateTodoItem =  this.todoList.filter(item => item._id == payload._id)[0]
+        for (const key in targetUpdateTodoItem) {
+          targetUpdateTodoItem[key] = payload[key]
+        }
       },
       showDeletedTodoList() {
         if(this.deletedTodoList.length === 0) {

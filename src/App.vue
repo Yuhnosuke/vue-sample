@@ -55,7 +55,7 @@
     },
     data() {
       return {
-        todoList: [],
+        todoList: null,
         deletedTodoList: [],
         input: {
           filter: {
@@ -72,12 +72,13 @@
       }
     },
     mounted() {
-      const todoListJson = localStorage.getItem('todoList')
+      this.axios.get('https://jsondb.ysk.im/todoapp/todos')
+        .then((response) => {
+          this.todoList = response.data.data
+        })
+        .catch((e) => {console.log('Get Error: ', e)})
+
       const deletedTodoListJson = localStorage.getItem('deletedTodoList')
-      if (todoListJson) {
-        const todoList = JSON.parse(todoListJson)
-        this.todoList = todoList
-      }
 
       if (deletedTodoListJson) {
         const deletedTodoList = JSON.parse(deletedTodoListJson)
@@ -118,15 +119,19 @@
         if (item.title === '') {
           return
         }
-        this.todoList.push({
+
+        const payload = {
           id: generateId(),
           title: item.title,
           expiresAt: item.expiresAt || null,
           category: item.category || null,
           memo: item.memo || null,
-          isDone: false,
-        })
-        localStorage.setItem('todoList', JSON.stringify(this.todoList))
+          isDone: false,  
+        }
+
+        this.axios.post('https://jsondb.ysk.im/todoapp/todos', payload)
+        this.todoList.push(payload)
+        
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleDeleteItem(id) {
@@ -135,7 +140,6 @@
 
         this.todoList = this.todoList.filter(item => item.id !== id)      
 
-        localStorage.setItem('todoList', JSON.stringify(this.todoList))
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleUpdateTodoItem(id, payload) {
@@ -144,8 +148,6 @@
         updateTodoItem.expiresAt = payload.expiresAt
         updateTodoItem.category = payload.category
         updateTodoItem.memo = payload.memo
-        
-        localStorage.setItem('todoList', JSON.stringify(this.todoList))
         
       },
       showDeletedTodoList() {

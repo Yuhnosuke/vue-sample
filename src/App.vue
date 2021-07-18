@@ -26,7 +26,7 @@
         <TodoItem 
           :key="item._id"
           :content="item"
-          :deleteItem="handleDeleteItem"
+          :deleteTodoItem="handleDeleteItem"
           :updateTodoItem="handleUpdateTodoItem"
           />
       </template>
@@ -132,13 +132,17 @@
         
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
-      handleDeleteItem(id) {
-        const deletedItem = this.todoList.filter(item => item.id === id)[0]
-        this.deletedTodoList.push(deletedItem)
+      handleDeleteItem(_id) {
+        // console.log('URL',  'https://jsondb.ysk.im/todoapp/todos/' + String(_id))
+        this.axios.delete('https://jsondb.ysk.im/todoapp/todos/' + _id)
 
-        this.todoList = this.todoList.filter(item => item.id !== id)      
+        this.todoList = this.todoList.filter(item => item._id !== _id)      
+        // const targetDeleteTodoItem = this.todoList.filter(item => item.id === id)[0]
+        // this.deletedTodoList.push(targetDeleteTodoItem)
 
-        localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
+        // this.todoList = this.todoList.filter(item => item.id !== id)      
+
+        // localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleUpdateTodoItem(payload) {
         this.axios.put('https://jsondb.ysk.im/todoapp/todos/' + String(payload._id), payload)

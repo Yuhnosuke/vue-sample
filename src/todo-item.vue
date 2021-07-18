@@ -87,7 +87,7 @@
         type: Object,
         required: true,
       },
-      deleteItem: {
+      deleteTodoItem: {
         type: Function,
         required: true,
       },
@@ -103,7 +103,7 @@
     },
     methods: {
       onClickDelete() {
-        this.deleteItem(this.content.id)
+        this.deleteTodoItem(this.content._id)
       },
       toggleIsDone() {
         this.content.isDone = !this.content.isDone

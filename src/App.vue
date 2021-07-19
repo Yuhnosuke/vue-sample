@@ -16,6 +16,12 @@
         :value="input.candidate.category.name"
         @change="onInputCandidateCategory"
         >
+      <button 
+        class="deleted-todos-button" 
+        :deletedTodoList="deletedTodoList"
+        @click="showDeletedTodoList"
+        >削除済Todo
+      </button>
       <template v-for="item in this.filteredTodoList">
         <TodoItem 
           :key="item._id"
@@ -40,8 +46,6 @@
   const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
   const generateIdEightDigits = idByUnit(8)
 
-  const baseURL = 'https://jsondb.app/todoapp/todos/'
-
   export default Vue.extend({
     name: 'App',
     components: {
@@ -51,6 +55,7 @@
     data() {
       return {
         todoList: null,
+        deletedTodoList: [],
         input: {
           filter: {
             category: null,
@@ -66,11 +71,18 @@
       }
     },
     mounted() {
-      this.axios.get(baseURL)
+      this.axios.get('https://jsondb.ysk.im/todoapp/todos')
         .then((response) => {
           this.todoList = response.data.data
         })
         .catch((e) => {console.log('Get Error: ', e)})
+
+      const deletedTodoListJson = localStorage.getItem('deletedTodoList')
+
+      if (deletedTodoListJson) {
+        const deletedTodoList = JSON.parse(deletedTodoListJson)
+        this.deletedTodoList = deletedTodoList
+      }
     },
     computed: {
       filteredTodoList() {
@@ -114,22 +126,39 @@
           memo: item.memo || null,
           isDone: false,  
         }
-        this.axios.post(baseURL, payload)
+
+        this.axios.post('https://jsondb.ysk.im/todoapp/todos', payload)
         this.todoList.push(payload)
         
+        localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleDeleteItem(_id) {
-        this.axios.delete(baseURL + _id)
-        this.todoList = this.todoList.filter(item => item._id !== _id)              
+        // console.log('URL',  'https://jsondb.ysk.im/todoapp/todos/' + String(_id))
+        this.axios.delete('https://jsondb.ysk.im/todoapp/todos/' + _id)
+
+        this.todoList = this.todoList.filter(item => item._id !== _id)      
+        // const targetDeleteTodoItem = this.todoList.filter(item => item.id === id)[0]
+        // this.deletedTodoList.push(targetDeleteTodoItem)
+
+        // this.todoList = this.todoList.filter(item => item.id !== id)      
+
+        // localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleUpdateTodoItem(payload) {
-        this.axios.put(baseURL + payload._id, payload)
+        this.axios.put('https://jsondb.ysk.im/todoapp/todos/' + String(payload._id), payload)
         
         const targetUpdateTodoItem =  this.todoList.filter(item => item._id == payload._id)[0]
         for (const key in targetUpdateTodoItem) {
           targetUpdateTodoItem[key] = payload[key]
         }
-      }
+      },
+      showDeletedTodoList() {
+        if(this.deletedTodoList.length === 0) {
+          console.log('削除済Todoはありません')
+          return
+        }
+        this.deletedTodoList.map(item => console.log(item.title))
+      },
     },
   })
 </script>
@@ -155,6 +184,14 @@
     font-size: 16px;
     padding: 4px;
   }
+  .deleted-todos-button {
+    margin-bottom: 8px;
+    font-size: 16px;
+    padding: 2px;
+    position: absolute;
+    right: 16px;
+  }
+
   .add-category-field {
     margin-left: 8px;
   }

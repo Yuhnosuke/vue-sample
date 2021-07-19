@@ -46,6 +46,8 @@
   const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
   const generateIdEightDigits = idByUnit(8)
 
+  const baseURL = 'https://jsondb.app/todoapp/todos/'
+
   export default Vue.extend({
     name: 'App',
     components: {
@@ -71,7 +73,7 @@
       }
     },
     mounted() {
-      this.axios.get('https://jsondb.ysk.im/todoapp/todos')
+      this.axios.get(baseURL)
         .then((response) => {
           this.todoList = response.data.data
         })
@@ -127,25 +129,18 @@
           isDone: false,  
         }
 
-        this.axios.post('https://jsondb.ysk.im/todoapp/todos', payload)
+        this.axios.post(baseURL, payload)
         this.todoList.push(payload)
         
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleDeleteItem(_id) {
-        // console.log('URL',  'https://jsondb.ysk.im/todoapp/todos/' + String(_id))
-        this.axios.delete('https://jsondb.ysk.im/todoapp/todos/' + _id)
+        this.axios.delete(baseURL + _id)
 
-        this.todoList = this.todoList.filter(item => item._id !== _id)      
-        // const targetDeleteTodoItem = this.todoList.filter(item => item.id === id)[0]
-        // this.deletedTodoList.push(targetDeleteTodoItem)
-
-        // this.todoList = this.todoList.filter(item => item.id !== id)      
-
-        // localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
+        this.todoList = this.todoList.filter(item => item._id !== _id)
       },
       handleUpdateTodoItem(payload) {
-        this.axios.put('https://jsondb.ysk.im/todoapp/todos/' + String(payload._id), payload)
+        this.axios.put(baseURL + String(payload._id), payload)
         
         const targetUpdateTodoItem =  this.todoList.filter(item => item._id == payload._id)[0]
         for (const key in targetUpdateTodoItem) {

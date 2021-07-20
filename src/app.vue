@@ -9,21 +9,21 @@
         :value="input.filter.category"
         @change="onInputFilterCategory"
       />
-      <input 
+      <input
         class="text-field add-category-field"
         type="text"
         placeholder="カテゴリを追加"
         :value="input.candidate.category.name"
         @change="onInputCandidateCategory"
         >
-      <button 
-        class="deleted-todos-button" 
+      <button
+        class="deleted-todos-button"
         :deletedTodoList="deletedTodoList"
         @click="showDeletedTodoList"
         >削除済Todo
       </button>
       <template v-for="item in this.filteredTodoList">
-        <TodoItem 
+        <TodoItem
           :key="item._id"
           :content="item"
           :deleteTodoItem="handleDeleteItem"
@@ -126,12 +126,12 @@
           expiresAt: item.expiresAt || null,
           category: item.category || null,
           memo: item.memo || null,
-          isDone: false,  
+          isDone: false,
         }
 
         this.axios.post(baseURL, payload)
         this.todoList.push(payload)
-        
+
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleDeleteItem(_id) {
@@ -141,7 +141,7 @@
       },
       handleUpdateTodoItem(payload) {
         this.axios.put(baseURL + String(payload._id), payload)
-        
+
         const targetUpdateTodoItem =  this.todoList.filter(item => item._id == payload._id)[0]
         for (const key in targetUpdateTodoItem) {
           targetUpdateTodoItem[key] = payload[key]

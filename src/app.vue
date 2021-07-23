@@ -57,6 +57,7 @@
     data() {
       return {
         todoList: {},
+        todoListIds: [],
         deletedTodoList: [],
         input: {
           filter: {
@@ -79,6 +80,7 @@
           for (const key in data) {
             const item = data[key]
             const itemId = item._id
+            this.todoListIds.push(itemId)
             this.todoList[itemId] = item._id
             this.todoList[itemId] = {
               _id: item._id,
@@ -100,11 +102,20 @@
     },
     computed: {
       filteredTodoList() {
+        // ここ!!
+        // なんでtodoListIdsをlogするしないでプログラムの挙動に変化がある？
+        console.log(...this.todoListIds)
+        console.log('c')
         if (this.input.filter.category === null) {
           return this.todoList
         }
-        return this.todoList.filter((item) => {
-          return item.category === this.input.filter.category
+        // return this.todoList.filter((item) => {
+        //   return item.category === this.input.filter.category
+        // })
+        console.log('b')
+        return this.todoListIds.filter((id) => {
+          console.log('a')
+          return this.todoList[id].category === this.input.filter.category
         })
       },
     },

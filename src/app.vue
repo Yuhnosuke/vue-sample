@@ -56,7 +56,7 @@
     },
     data() {
       return {
-        todoList: null,
+        todoList: {},
         deletedTodoList: [],
         input: {
           filter: {
@@ -75,10 +75,22 @@
     mounted() {
       this.axios.get(baseURL)
         .then((response) => {
-          this.todoList = response.data.data
+          const data  = response.data.data
+          for (const key in data) {
+            const item = data[key]
+            const itemId = item._id
+            this.todoList[itemId] = item._id
+            this.todoList[itemId] = {
+              _id: item._id,
+              title: item.title,
+              expiresAt: item.expiresAt,
+              category: item.category,
+              memo: item.memo,
+              isDone: item.isDone
+            }
+          }
         })
         .catch((e) => {console.log('Get Error: ', e)})
-
       const deletedTodoListJson = localStorage.getItem('deletedTodoList')
 
       if (deletedTodoListJson) {

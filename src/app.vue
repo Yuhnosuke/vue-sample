@@ -22,7 +22,7 @@
         @click="showDeletedTodoList"
         >削除済Todo
       </button>
-      <template v-for="item in this.filterTodoList">
+      <template v-for="item in this.filteredTodoList">
         <TodoItem
           :key="item._id"
           :content="item"
@@ -89,7 +89,7 @@
       }
     },
     computed: {
-      filterTodoList() {
+      filteredTodoList() {
         if (this.input.filter.category === null) {
           return this.todoList
         }

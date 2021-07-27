@@ -22,7 +22,7 @@
         @click="showDeletedTodoList"
         >削除済Todo
       </button>
-      <template v-for="item in this.filteredTodoList">
+      <template v-for="item in this.filterTodoList">
         <TodoItem
           :key="item._id"
           :content="item"
@@ -76,21 +76,9 @@
     mounted() {
       this.axios.get(baseURL)
         .then((response) => {
-          const data  = response.data.data
-          for (const key in data) {
-            const item = data[key]
-            const itemId = item._id
-            this.todoListIds.push(itemId)
-            this.todoList[itemId] = item._id
-            this.todoList[itemId] = {
-              _id: item._id,
-              title: item.title,
-              expiresAt: item.expiresAt,
-              category: item.category,
-              memo: item.memo,
-              isDone: item.isDone
-            }
-          }
+          const {data} = response.data
+          this.todoListIds = data.map(item => item._id)
+          this.todoList = data.reduce((todoList, item) => ({...todoList, [item._id]: item}), this.todoList)
         })
         .catch((e) => {console.log('Get Error: ', e)})
       const deletedTodoListJson = localStorage.getItem('deletedTodoList')
@@ -101,22 +89,22 @@
       }
     },
     computed: {
-      filteredTodoList() {
-        // ここ!!
-        // なんでtodoListIdsをlogするしないでプログラムの挙動に変化がある？
-        console.log(...this.todoListIds)
-        console.log('c')
+      filterTodoList() {
         if (this.input.filter.category === null) {
           return this.todoList
         }
-        // return this.todoList.filter((item) => {
-        //   return item.category === this.input.filter.category
-        // })
-        console.log('b')
-        return this.todoListIds.filter((id) => {
-          console.log('a')
+
+        const filterdToListIds = this.todoListIds.filter(id => {
           return this.todoList[id].category === this.input.filter.category
         })
+
+        const todoListAsArray = Object.entries(this.todoList)
+        const filterdtodoListAsArray = todoListAsArray.filter(([id, _]) => {
+          console.log(_)
+          return filterdToListIds.includes(id)
+        })
+        return Object.fromEntries(filterdtodoListAsArray)
+
       },
     },
     methods: {

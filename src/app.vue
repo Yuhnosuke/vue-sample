@@ -152,8 +152,14 @@
       },
       handleDeleteItem(_id) {
         this.axios.delete(baseURL + _id)
-
-        this.todoList = this.todoList.filter(item => item._id !== _id)
+        .then(() => {
+          this.todoListIds = this.todoListIds.filter((id) => id !== _id)
+          const { [_id]: removed, ...rest } = this.todoList
+          // FIXME: 本来、不要なlog
+          console.log(removed)
+          this.todoList = rest
+        })
+        .catch((e) => console.log('DELETE error: ', e))
       },
       handleUpdateTodoItem(payload) {
         this.axios.put(baseURL + String(payload._id), payload)

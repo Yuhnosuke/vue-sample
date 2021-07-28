@@ -159,6 +159,7 @@
           console.log(removed)
           this.todoList = rest
         })
+        .catch((e) => console.log('DELETE error: ', e))
       },
       handleUpdateTodoItem(payload) {
         this.axios.put(baseURL + String(payload._id), payload)

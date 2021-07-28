@@ -20,7 +20,7 @@
           <input id="title"
           class="text-field"
           type="text"
-          :value="this.contentToUpdate.title"
+          :value="localContent.title"
           @keyup="onInputTitle"
            /> 
         </div>
@@ -30,7 +30,7 @@
             id="expiresAt"
             class="text-field"
             type="text"
-            :value="this.contentToUpdate.expiresAt" 
+            :value="this.localContent.expiresAt" 
             @keyup="onInputExpiresAt"
             />
         </div>
@@ -40,7 +40,7 @@
             id="category"
             class="text-field"
             type="text"
-            :value="this.contentToUpdate.category"
+            :value="this.localContent.category"
             @keyup="onInputCategory"
             />
         </div>
@@ -50,7 +50,7 @@
             id="memo"
             class="text-field"
             type="text"
-            :value="this.contentToUpdate.memo"
+            :value="this.localContent.memo"
             @keyup="onInputMemo"
             />
         </div>
@@ -98,15 +98,16 @@
     },
     data() {
       return {
-        showDialog: false
+        showDialog: false,
+        localContent: {...this.content}
       }
     },
     methods: {
       onClickDelete() {
-        this.deleteTodoItem(this.content._id)
+        this.deleteTodoItem(this.localContent._id)
       },
       toggleIsDone() {
-        this.content.isDone = !this.content.isDone
+        this.localContent.isDone = !this.localContent.isDone
        },
        openEditDialog() {
          this.showDialog = true
@@ -115,43 +116,27 @@
          this.showDialog = false
        },
        onClickUpdate() {
-         const payload = {
-           _id: this.contentToUpdate._id,
-           title: this.contentToUpdate.title,
-           expiresAt: this.contentToUpdate.expiresAt,
-           category: this.contentToUpdate.category,
-           memo: this.contentToUpdate.memo
-         }
-         this.updateTodoItem(payload)
-
+         this.updateTodoItem(this.localContent)
          this.showDialog = false
        },
+      //  FIXME: 以下、同様の処理を繰り返してしまっている
        onInputTitle(event) {
-         this.contentToUpdate.title = event.target.value
+         this.localContent = {...this.localContent, title: event.target.value}
        },
        onInputExpiresAt(event) {
-         this.contentToUpdate.expiresAt = event.target.value
+         this.localContent = {...this.localContent, expiresAt: event.target.value}
        },
        onInputCategory(event) {
-         this.contentToUpdate.category = event.target.value
+        this.localContent = {...this.localContent, category: event.target.value}
        },
        onInputMemo(event) {
-         this.contentToUpdate.memo = event.target.value
+         this.localContent = {...this.localContent, memo: event.target.value}
        }
     },
     computed: {
       classObject: function() {
         return {
-          done: this.content.isDone
-        }
-      },
-      contentToUpdate: function() {
-        return {
-          _id: this.content._id,
-          title: this.content.title,
-          expiresAt: this.content.expiresAt,
-          category: this.content.category,
-          memo: this.content.memo,
+          done: this.localContent.isDone
         }
       }
     }

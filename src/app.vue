@@ -80,7 +80,7 @@
           this.todoListIds = data.map(item => item._id)
           this.todoList = data.reduce((todoList, item) => ({...todoList, [item._id]: item}), this.todoList)
         })
-        .catch((e) => {console.log('Get Error: ', e)})
+        .catch((e) => {console.log('GET Error: ', e)})
       const deletedTodoListJson = localStorage.getItem('deletedTodoList')
 
       if (deletedTodoListJson) {
@@ -144,9 +144,11 @@
           .then((response) => {
             const {data} = response.data
             this.todoListIds.concat([data._id])
-            this.todoList = Object.assign({}, this.todoList, {[data._id]: data})            
+            this.todoList = {...this.todoList, [data._id]: data}
+
+            // this.todoList = Object.assign({}, this.todoList, {[data._id]: data})
           })
-          .catch((e) => console.log('Post error: ', e))
+          .catch((e) => console.log('POST error: ', e))
           
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
@@ -162,12 +164,12 @@
         .catch((e) => console.log('DELETE error: ', e))
       },
       handleUpdateTodoItem(payload) {
-        this.axios.put(baseURL + String(payload._id), payload)
-
-        const targetUpdateTodoItem =  this.todoList.filter(item => item._id == payload._id)[0]
-        for (const key in targetUpdateTodoItem) {
-          targetUpdateTodoItem[key] = payload[key]
-        }
+        this.axios.put(baseURL + payload._id, payload)
+        .then((response) => {
+          const {data} = response.data
+          this.todoList = {...this.todoList, [data._id]: data}
+        })
+        .catch((e) => console.log('PUT error:', e))
       },
       showDeletedTodoList() {
         if(this.deletedTodoList.length === 0) {

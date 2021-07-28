@@ -100,11 +100,11 @@
 
         const todoListAsArray = Object.entries(this.todoList)
         const filterdtodoListAsArray = todoListAsArray.filter(([id, _]) => {
+          // FIXME: Linter に使わない変数: _ を怒られる
           console.log(_)
           return filterdToListIds.includes(id)
         })
         return Object.fromEntries(filterdtodoListAsArray)
-
       },
     },
     methods: {
@@ -141,8 +141,13 @@
         }
 
         this.axios.post(baseURL, payload)
-        this.todoList.push(payload)
-
+          .then((response) => {
+            const {data} = response.data
+            this.todoListIds.concat([data._id])
+            this.todoList = Object.assign({}, this.todoList, {[data._id]: data})            
+          })
+          .catch((e) => console.log('Post error: ', e))
+          
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleDeleteItem(_id) {

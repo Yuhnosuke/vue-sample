@@ -56,7 +56,8 @@
     },
     data() {
       return {
-        todoList: null,
+        todoList: {},
+        todoListIds: [],
         deletedTodoList: [],
         input: {
           filter: {
@@ -75,10 +76,11 @@
     mounted() {
       this.axios.get(baseURL)
         .then((response) => {
-          this.todoList = response.data.data
+          const {data} = response.data
+          this.todoListIds = data.map(item => item._id)
+          this.todoList = data.reduce((todoList, item) => ({...todoList, [item._id]: item}), this.todoList)
         })
         .catch((e) => {console.log('Get Error: ', e)})
-
       const deletedTodoListJson = localStorage.getItem('deletedTodoList')
 
       if (deletedTodoListJson) {
@@ -91,9 +93,18 @@
         if (this.input.filter.category === null) {
           return this.todoList
         }
-        return this.todoList.filter((item) => {
-          return item.category === this.input.filter.category
+
+        const filterdToListIds = this.todoListIds.filter(id => {
+          return this.todoList[id].category === this.input.filter.category
         })
+
+        const todoListAsArray = Object.entries(this.todoList)
+        const filterdtodoListAsArray = todoListAsArray.filter(([id, _]) => {
+          // FIXME: Linter に使わない変数: _ を怒られる
+          console.log(_)
+          return filterdToListIds.includes(id)
+        })
+        return Object.fromEntries(filterdtodoListAsArray)
       },
     },
     methods: {
@@ -130,8 +141,13 @@
         }
 
         this.axios.post(baseURL, payload)
-        this.todoList.push(payload)
-
+          .then((response) => {
+            const {data} = response.data
+            this.todoListIds.concat([data._id])
+            this.todoList = Object.assign({}, this.todoList, {[data._id]: data})            
+          })
+          .catch((e) => console.log('Post error: ', e))
+          
         localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleDeleteItem(_id) {

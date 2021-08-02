@@ -9,13 +9,6 @@
         :value="input.filter.category"
         @change="onInputFilterCategory"
       />
-      <input
-        class="text-field add-category-field"
-        type="text"
-        placeholder="カテゴリを追加"
-        :value="input.candidate.category.name"
-        @change="onInputCandidateCategory"
-        >
       <template v-for="item in this.filteredTodoList">
         <TodoItem
           :key="item._id"
@@ -27,7 +20,6 @@
     </section>
     <ToolBox
       :addTodoItem="handleAddTodoItem"
-      :inputedCandidateCategories="candidates"
       />
   </main>
 </template>
@@ -37,8 +29,7 @@
   import TodoItem from './todo-item'
   import ToolBox from './tool-box'
 
-  const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
-  const generateIdEightDigits = idByUnit(8)
+  // const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
 
   const baseURL = 'https://jsondb.app/todoapp/todos/'
 
@@ -56,14 +47,7 @@
           filter: {
             category: null,
           },
-          candidate: {
-            category: {
-              id: null,
-              name: null
-            },
-          },
         },
-        candidates: []
       }
     },
     mounted() {
@@ -101,18 +85,6 @@
           return
         }
         this.input.filter.category = event.target.value
-      },
-      onInputCandidateCategory(event) {
-        if (event.target.value === '') {
-          this.input.candidate.category = null
-          return
-        }
-        this.input.candidate.category = {
-          id: generateIdEightDigits(),
-          name: event.target.value
-        }
-        this.candidates.push(this.input.candidate.category)
-        this.input.candidate.category = {}
       },
       handleAddTodoItem(item) {
         if (item.title === '') {

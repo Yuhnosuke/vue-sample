@@ -115,28 +115,23 @@
          this.showDialog = false
        },
        onClickUpdate() {
-         const payload = {
-           _id: this.contentToUpdate._id,
-           title: this.contentToUpdate.title,
-           expiresAt: this.contentToUpdate.expiresAt,
-           category: this.contentToUpdate.category,
-           memo: this.contentToUpdate.memo
-         }
-         this.updateTodoItem(payload)
-
+         this.updateTodoItem(this.contentToUpdate)
          this.showDialog = false
        },
+      setPropertyInContent(property, value) {
+        this.$set(this.contentToUpdate, property, value)
+      },
        onInputTitle(event) {
-         this.contentToUpdate.title = event.target.value
+         this.setPropertyInContent('title', event.target.value)
        },
        onInputExpiresAt(event) {
-         this.contentToUpdate.expiresAt = event.target.value
+         this.setPropertyInContent('expiresAt', event.target.value)
        },
        onInputCategory(event) {
-         this.contentToUpdate.category = event.target.value
+         this.setPropertyInContent('category', event.target.value)
        },
        onInputMemo(event) {
-         this.contentToUpdate.memo = event.target.value
+         this.setPropertyInContent('memo', event.target.value)
        }
     },
     computed: {
@@ -147,11 +142,7 @@
       },
       contentToUpdate: function() {
         return {
-          _id: this.content._id,
-          title: this.content.title,
-          expiresAt: this.content.expiresAt,
-          category: this.content.category,
-          memo: this.content.memo,
+          ...this.content
         }
       }
     }

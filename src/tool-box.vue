@@ -2,28 +2,13 @@
   <section class="tool-box">
     <input class="text-field" type="text" placeholder="タイトル" :value="title" @keyup="onInputTitle" />
     <input class="text-field" type="text" placeholder="期限" :value="expiresAt" @keyup="onInputExpiresAt" />
-    <div v-for="candidateCategory in this.generateCandidateCategories" :key="candidateCategory.id">
-      <input
-        type="radio"
-        name="selectCategory"
-        :id="'radio-' + candidateCategory.id"
-        :value="candidateCategory.name"
-        @change="onSelectCategory"
-        />
-      <label
-        :for="'radio-' + candidateCategory.id"
-        >{{ candidateCategory.name}}
-      </label>
-    </div>
+    <input class="text-field" type="text" placeholder="カテゴリ" :value="category" @keyup="onInputCategory">
     <input class="text-field" type="text" placeholder="メモ" :value="memo" @keyup="onInputMemo"/>
     <button @click="onClickAdd">追加</button>
   </section>
 </template>
 
 <script>
-  const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
-  const generateId = idByUnit(8)
-
   import Vue from 'vue'
   
   export default Vue.extend({
@@ -32,10 +17,6 @@
       addTodoItem: {
         type: Function,
         required: true,
-      },
-      inputedCandidateCategories: {
-        type: Array,
-        required: false
       }
     },
     data() {
@@ -44,11 +25,6 @@
         expiresAt: '',
         category: '',
         memo: '',
-        candiDateCategories: [
-          { id: generateId(), name: '遊び' },
-          { id: generateId(), name: '仕事' },
-          { id: generateId(), name: 'プライベート' }
-        ]
       }
     },
     methods: {
@@ -58,7 +34,7 @@
       onInputExpiresAt(event) {
          this.expiresAt = event.target.value
       },
-      onSelectCategory(event) {
+      onInputCategory(event) {
         this.category = event.target.value
       },
       onInputMemo(event) {
@@ -77,16 +53,6 @@
         this.memo = ''
       },
     },
-    computed: {
-      generateCandidateCategories() {
-        if (this.inputedCandidateCategories.length === 0) {
-          return this.candiDateCategories
-        }
-        const cloned = this.candiDateCategories.slice()
-        this.inputedCandidateCategories.map(inputed => cloned.push(inputed))
-        return cloned
-      }
-    }
   })
 </script>
 

@@ -16,12 +16,6 @@
         :value="input.candidate.category.name"
         @change="onInputCandidateCategory"
         >
-      <button
-        class="deleted-todos-button"
-        :deletedTodoList="deletedTodoList"
-        @click="showDeletedTodoList"
-        >削除済Todo
-      </button>
       <template v-for="item in this.filteredTodoList">
         <TodoItem
           :key="item._id"
@@ -58,7 +52,6 @@
       return {
         todoList: {},
         todoListIds: [],
-        deletedTodoList: [],
         input: {
           filter: {
             category: null,
@@ -81,12 +74,6 @@
           this.todoList = data.reduce((todoList, item) => ({...todoList, [item._id]: item}), this.todoList)
         })
         .catch((e) => {console.log('GET Error: ', e)})
-      const deletedTodoListJson = localStorage.getItem('deletedTodoList')
-
-      if (deletedTodoListJson) {
-        const deletedTodoList = JSON.parse(deletedTodoListJson)
-        this.deletedTodoList = deletedTodoList
-      }
     },
     computed: {
       filteredTodoList() {
@@ -147,8 +134,6 @@
             this.todoList = {...this.todoList, [data._id]: data}
           })
           .catch((e) => console.log('POST error: ', e))
-          
-        localStorage.setItem('deletedTodoList', JSON.stringify(this.deletedTodoList))
       },
       handleDeleteItem(_id) {
         this.axios.delete(baseURL + _id)
@@ -168,13 +153,6 @@
           this.todoList = {...this.todoList, [data._id]: data}
         })
         .catch((e) => console.log('PUT error: ', e))
-      },
-      showDeletedTodoList() {
-        if(this.deletedTodoList.length === 0) {
-          console.log('削除済Todoはありません')
-          return
-        }
-        this.deletedTodoList.map(item => console.log(item.title))
       },
     },
   })
@@ -201,14 +179,6 @@
     font-size: 16px;
     padding: 4px;
   }
-  .deleted-todos-button {
-    margin-bottom: 8px;
-    font-size: 16px;
-    padding: 2px;
-    position: absolute;
-    right: 16px;
-  }
-
   .add-category-field {
     margin-left: 8px;
   }

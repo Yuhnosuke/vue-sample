@@ -22,12 +22,18 @@
         @click="showDeletedTodoList"
         >削除済Todo
       </button>
+      <EditDialog
+        :showDialog="showDialog"
+        :content="targetUpdateContent"
+        :closeEditDialog="handleCloseEditDialog"
+        :updateTodoItem="handleUpdateTodoItem"
+      />
       <template v-for="item in this.filteredTodoList">
         <TodoItem
           :key="item._id"
           :content="item"
           :deleteTodoItem="handleDeleteItem"
-          :updateTodoItem="handleUpdateTodoItem"
+          :openEditDialog="handleOpenEditDialog"
           />
       </template>
     </section>
@@ -42,6 +48,7 @@
   import Vue from 'vue'
   import TodoItem from './todo-item'
   import ToolBox from './tool-box'
+  import EditDialog from './edit-dialog'
 
   const idByUnit = (unit) => () => [...Array(unit)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
   const generateIdEightDigits = idByUnit(8)
@@ -53,12 +60,15 @@
     components: {
       TodoItem,
       ToolBox,
+      EditDialog,
     },
     data() {
       return {
         todoList: {},
         todoListIds: [],
         deletedTodoList: [],
+        showDialog: false,
+        targetUpdateContent: {},
         input: {
           filter: {
             category: null,
@@ -175,6 +185,12 @@
           return
         }
         this.deletedTodoList.map(item => console.log(item.title))
+      },
+      handleOpenEditDialog() {
+        this.showDialog = true
+      },
+      handleCloseEditDialog() {
+        this.showDialog = false
       },
     },
   })

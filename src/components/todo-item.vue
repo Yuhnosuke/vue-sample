@@ -1,5 +1,8 @@
 <template>
   <div class="todo-item">
+    <h2>{{ content.title }}</h2>
+    <p v-if="content.expiresAt">{{ content.expiresAt }}まで</p>
+    <p v-if="content.category">{{ content.category }}</p>
   </div>
 </template>
 
@@ -8,6 +11,12 @@
 
   export default Vue.extend({
     name: 'TodoItem',
+    props: {
+      content: {
+        type: Object,
+        required: true,
+      }
+    }
   })
 </script>
 

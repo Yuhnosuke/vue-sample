@@ -1,0 +1,1 @@
+export const setEntity = (store, item) => ({ ...store, [item._id]: item })

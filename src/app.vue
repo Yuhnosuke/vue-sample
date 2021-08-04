@@ -4,19 +4,22 @@
       <h1>TODO</h1>
       <TodoList :ids="todoList.ids" :getTodoById="getTodoById"/>
     </section>
+    <CreateBox :createTodo="createTodo" />
   </main>
 </template>
 
 <script>
   import Vue from 'vue'
   import TodoList from './components/todo-list.vue'
-  import { setEntity } from './util'
-  import { getTodos } from './service'
+  import CreateBox from './components/create-box.vue'
+  import { setEntity, emptyStringToNull } from './util'
+  import { getTodos, createTodo } from './service'
 
   export default Vue.extend({
     name: 'App',
     components: {
-      TodoList
+      TodoList,
+      CreateBox
     },
     data() {
       return {
@@ -36,14 +39,26 @@
       setTodos(todos) {
         this.entity.todo = todos.reduce(setEntity, this.entity.todo)
       },
+      setTodo(todo) {
+        this.entity.todo = setEntity(this.entity.todo, todo)
+      },
       addTodoIds(ids) {
         this.todoList.ids = [...ids, ...this.todoList.ids]
+      },
+      addTodoId(id) {
+        this.todoList.ids.unshift(id)
       },
       // Async ops
       async fetchTodos() {
         const todos = await getTodos()
         this.setTodos(todos)
         this.addTodoIds(todos.map((todo) => todo._id))
+      },
+      async createTodo(content) {
+        if (!content.title) return
+        const todo = await createTodo(emptyStringToNull(content))
+        this.setTodo(todo)
+        this.addTodoId(todo._id)
       },
     },
     computed: {

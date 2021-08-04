@@ -1,5 +1,9 @@
 <template>
   <section class="create-box">
+    <input class="text-field" type="text" placeholder="タイトル" :title="title" @keyup="handleInputTitle"/>
+    <input class="text-field" type="text" placeholder="期限" :expiresAt="expiresAt" @keyup="handleInputExpiresAt"/>
+    <input class="text-field" type="text" placeholder="カテゴリ" :category="category" @keyup="handleInputCategory" />
+    <button @click="handleClickAdd">追加</button>
   </section>
 </template>
 
@@ -8,6 +12,37 @@
   
   export default Vue.extend({
     name: 'CreateBox',
+    data() {
+      return {
+        title: null,
+        expiresAt: null,
+        category: null,
+      }
+    },
+    props: {
+      createTodo: {
+        type: Function,
+        required: true,
+      }
+    },
+    methods: {
+      handleInputTitle(event) {
+        this.title = event.target.value
+      },
+      handleInputExpiresAt(event) {
+        this.expiresAt = event.target.value
+      },
+      handleInputCategory(event) {
+        this.category = event.target.value
+      },
+      handleClickAdd() {
+        this.createTodo({
+          title: this.title,
+          expiresAt: this.expiresAt,
+          category: this.category
+        })
+      },
+    }
   })
 </script>
 

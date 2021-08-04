@@ -16,3 +16,10 @@ export const getTodos = async () => {
   } = await agent.get('/todos')
   return data
 }
+
+export const createTodo = async (content) => {
+  const {
+    data: { data },
+  } = await agent.post('/todos', content)
+  return data
+}

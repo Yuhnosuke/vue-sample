@@ -23,3 +23,11 @@ export const createTodo = async (content) => {
   } = await agent.post('/todos', content)
   return data
 }
+
+export const deleteTodo = async (id) => {
+  const {
+    data: { data },
+  } = await agent.delete(`/todos/${id}`)
+  return data
+}
+

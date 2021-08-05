@@ -1,5 +1,6 @@
 <template>
   <div class="todo-item">
+    <button class="delete-button" @click="onClickDelete(content._id)">X</button>
     <h2>{{ content.title }}</h2>
     <p v-if="content.expiresAt">{{ content.expiresAt }}まで</p>
     <p v-if="content.category">{{ content.category }}</p>
@@ -15,7 +16,11 @@
       content: {
         type: Object,
         required: true,
-      }
+      },
+      onClickDelete: {
+        type: Function,
+        required: true,
+      },
     }
   })
 </script>
@@ -28,6 +33,14 @@
     padding: 8px;
     margin-bottom: 8px;
     position: relative;
+  }
+
+  .todo-item .delete-button {
+    position: absolute;
+    right: 72px;
+    top: 8px;
+    width: 28px;
+    height: 28px;
   }
 
 </style>

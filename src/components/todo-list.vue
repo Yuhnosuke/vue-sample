@@ -1,7 +1,11 @@
 <template>
   <div>
     <template v-for="todo in this.todos">
-      <TodoItem :key="todo._id" :content="todo" />
+      <TodoItem
+        :key="todo._id"
+        :content="todo"
+        :onClickDelete="onClickDelete"
+      />
     </template>
   </div>
   
@@ -22,6 +26,10 @@ export default Vue.extend({
       required: true,
     },
     getTodoById: {
+      type: Function,
+      required: true,
+    },
+    onClickDelete: {
       type: Function,
       required: true,
     }

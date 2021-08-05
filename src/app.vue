@@ -2,7 +2,11 @@
   <main>
     <section class="container">
       <h1>TODO</h1>
-      <TodoList :ids="todoList.ids" :getTodoById="getTodoById"/>
+      <TodoList
+        :ids="todoList.ids"
+        :getTodoById="getTodoById"
+        :onClickDelete="deleteTodoById" 
+      />
     </section>
     <CreateBox :createTodo="createTodo" />
   </main>
@@ -13,7 +17,7 @@
   import TodoList from './components/todo-list.vue'
   import CreateBox from './components/create-box.vue'
   import { setEntity, emptyStringToNull } from './util'
-  import { getTodos, createTodo } from './service'
+  import { getTodos, createTodo, deleteTodo } from './service'
 
   export default Vue.extend({
     name: 'App',
@@ -48,6 +52,9 @@
       addTodoId(id) {
         this.todoList.ids.unshift(id)
       },
+      removeTodoId(id) {
+        this.todoList.ids = this.todoList.ids.filter((_id) => _id !== id)
+      },
       // Async ops
       async fetchTodos() {
         const todos = await getTodos()
@@ -60,6 +67,10 @@
         this.setTodo(todo)
         this.addTodoId(todo._id)
       },
+      async deleteTodoById(id) {
+        await deleteTodo(id)
+        this.removeTodoId(id)
+      }
     },
     computed: {
       todos() {

@@ -2,8 +2,10 @@
   <main>
     <section class="container">
       <h1>TODO</h1>
+      <FilterBox title="カテゴリ" :value="input.filter.category" :onInput="setFilterCategory" />
+      <FilterBox title="期限" :value="input.filter.expiresAt" :onInput="setFilterExpiresAt" />
       <TodoList
-        :ids="todoList.ids"
+        :ids="filteredTodoIds"
         :getTodoById="getTodoById"
         :onClickDelete="deleteTodoById" 
       />
@@ -16,6 +18,7 @@
   import Vue from 'vue'
   import TodoList from './components/todo-list.vue'
   import CreateBox from './components/create-box.vue'
+  import FilterBox from './components/filter-box.vue'
   import { setEntity, emptyStringToNull } from './util'
   import { getTodos, createTodo, deleteTodo } from './service'
 
@@ -23,7 +26,8 @@
     name: 'App',
     components: {
       TodoList,
-      CreateBox
+      CreateBox,
+      FilterBox,
     },
     data() {
       return {
@@ -32,6 +36,12 @@
         },
         todoList: {
           ids: [],
+        },
+        input: {
+          filter: {
+            category: null,
+            expiresAt: null,
+          },
         },
       }
     },
@@ -70,11 +80,27 @@
       async deleteTodoById(id) {
         await deleteTodo(id)
         this.removeTodoId(id)
+      },
+      // FIlter
+      setFilterCategory(value) {
+        const category = value === '' ? null : value
+        this.input.filter = { ...this.input.filter, category }
+      },
+      setFilterExpiresAt(value) {
+        const expiresAt = value ==='' ? null : value
+        this.input.filter = { ...this.input.filter, expiresAt }
       }
     },
     computed: {
       todos() {
         return this.todoList.ids.map((id) => this.getTodoById(id))
+      },
+      filteredTodoIds() {
+        const { category, expiresAt } = this.input.filter
+        return this.todos
+          .filter((todo) => category === null || todo.category === category)
+          .filter((todo) => expiresAt === null || todo.expiresAt === expiresAt)
+          .map((todo) => todo._id)
       },
     },
     mounted() {

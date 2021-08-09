@@ -1,6 +1,7 @@
 <template>
   <div class="todo-item">
     <button class="delete-button" @click="onClickDelete(content._id)">X</button>
+    <button class="edit-button" @click="onClickEdit(content._id)">編集</button>
     <h2>{{ content.title }}</h2>
     <p v-if="content.expiresAt">{{ content.expiresAt }}まで</p>
     <p v-if="content.category">{{ content.category }}</p>
@@ -21,6 +22,10 @@
         type: Function,
         required: true,
       },
+      onClickEdit: {
+        type: Function,
+        required: true,
+      }
     }
   })
 </script>
@@ -40,6 +45,14 @@
     right: 72px;
     top: 8px;
     width: 28px;
+    height: 28px;
+  }
+
+  .todo-item .edit-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 56px;
     height: 28px;
   }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input class="text-field" type="text" :placeholder="`${title}でフィルタ`" :value="value" @chenge="handleChange" />
+    <input class="text-field" type="text" :placeholder="`${title}でフィルタ`" :value="value" @change="handleChange" />
   </div>
 </template>
 

@@ -5,7 +5,7 @@
       <FilterBox title="カテゴリ" :value="input.filter.category" :onInput="setFilterCategory" />
       <FilterBox title="期限" :value="input.filter.expiresAt" :onInput="setFilterExpiresAt" />
       <TodoList
-        :ids="filterdTodoIds"
+        :ids="filteredTodoIds"
         :getTodoById="getTodoById"
         :onClickDelete="deleteTodoById" 
       />
@@ -41,8 +41,8 @@
           filter: {
             category: null,
             expiresAt: null,
-          }
-        }
+          },
+        },
       }
     },
     methods: {
@@ -88,18 +88,18 @@
       },
       setFilterExpiresAt(value) {
         const expiresAt = value ==='' ? null : value
-        this.input.filter = { ...this.input,filter, expiresAt }
+        this.input.filter = { ...this.input.filter, expiresAt }
       }
     },
     computed: {
       todos() {
         return this.todoList.ids.map((id) => this.getTodoById(id))
       },
-      filterdTodoIds() {
+      filteredTodoIds() {
         const { category, expiresAt } = this.input.filter
         return this.todos
           .filter((todo) => category === null || todo.category === category)
-          .filter((todo) => exporesAt === null || todo.expiresAt === expiresAt)
+          .filter((todo) => expiresAt === null || todo.expiresAt === expiresAt)
           .map((todo) => todo._id)
       },
     },

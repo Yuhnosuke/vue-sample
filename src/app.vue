@@ -7,10 +7,20 @@
       <TodoList
         :ids="filteredTodoIds"
         :getTodoById="getTodoById"
-        :onClickDelete="deleteTodoById" 
+        :onClickDelete="deleteTodoById"
+        :onClickEdit="openEditModal"
       />
     </section>
     <CreateBox :createTodo="createTodo" />
+    <EditModal 
+      :visible="input.edit.visible"
+      :close="closeEditModal"
+      :save="saveCurrentEditting"
+      :content="input.edit.content"
+      :onChangeTitle="setEditTitle"
+      :onChangeExpiresAt="setEditExpiresAt"
+      :onChangeCategory="setEditCategory"
+    />
   </main>
 </template>
 
@@ -19,8 +29,9 @@
   import TodoList from './components/todo-list.vue'
   import CreateBox from './components/create-box.vue'
   import FilterBox from './components/filter-box.vue'
+  import EditModal from './components/edit-modal.vue'
   import { setEntity, emptyStringToNull } from './util'
-  import { getTodos, createTodo, deleteTodo } from './service'
+  import { getTodos, createTodo, deleteTodo, updateTodo } from './service'
 
   export default Vue.extend({
     name: 'App',
@@ -28,6 +39,7 @@
       TodoList,
       CreateBox,
       FilterBox,
+      EditModal,
     },
     data() {
       return {
@@ -42,6 +54,15 @@
             category: null,
             expiresAt: null,
           },
+          edit: {
+            visible: false,
+            id: null,
+            content: {
+              title: null,
+              expiresAt: null,
+              category: null,
+            }
+          }
         },
       }
     },
@@ -81,6 +102,11 @@
         await deleteTodo(id)
         this.removeTodoId(id)
       },
+      async updateTodoById(id, content) {
+        if (!content.title) return
+        const todo = await updateTodo(id, emptyStringToNull(content))
+        this.setTodo(todo)
+      },
       // FIlter
       setFilterCategory(value) {
         const category = value === '' ? null : value
@@ -89,7 +115,35 @@
       setFilterExpiresAt(value) {
         const expiresAt = value ==='' ? null : value
         this.input.filter = { ...this.input.filter, expiresAt }
-      }
+      },
+      // Edit
+      setEditTitle(value) {
+        const title = value === '' ? null : value
+        this.input.edit.content = { ...this.input.edit.content, title }
+      },
+      setEditExpiresAt(value) {
+        const expiresAt = value === '' ? null : value
+        this.input.edit.content = { ...this.input.edit.content, expiresAt }
+      },
+      setEditCategory(value) {
+        const category = value === '' ? null : value
+        this.input.edit.content = { ...this.input.edit.content, category }
+      },
+      openEditModal(id) {
+        const { _id, ...todo } = this.getTodoById(id)
+        this.input.edit.content = todo
+        this.input.edit.id = _id
+        this.input.edit.visible = true
+      },
+      closeEditModal() {
+        this.input.edit.content = { title: null, expiresAt: null, category: null }
+        this.input.edit.id = null
+        this.input.edit.visible = false
+      },
+      async saveCurrentEditting() {
+        await this.updateTodoById(this.input.edit.id, this.input.edit.content)
+        this.closeEditModal()
+      },
     },
     computed: {
       todos() {

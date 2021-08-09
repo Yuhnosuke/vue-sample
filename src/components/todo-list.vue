@@ -5,6 +5,7 @@
         :key="todo._id"
         :content="todo"
         :onClickDelete="onClickDelete"
+        :onClickEdit="onClickEdit"
       />
     </template>
   </div>
@@ -30,6 +31,10 @@ export default Vue.extend({
       required: true,
     },
     onClickDelete: {
+      type: Function,
+      required: true,
+    },
+    onClickEdit: {
       type: Function,
       required: true,
     }

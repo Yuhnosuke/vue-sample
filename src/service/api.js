@@ -24,10 +24,16 @@ export const createTodo = async (content) => {
   return data
 }
 
+export const updateTodo = async (id, content) => {
+  const {
+    data: { data } ,
+  } = await agent.put(`/todos/${id}`, content)
+  return data
+}
+
 export const deleteTodo = async (id) => {
   const {
     data: { data },
   } = await agent.delete(`/todos/${id}`)
   return data
 }
-
